@@ -22,7 +22,6 @@ addCommandAlias("tc", "Test/compile")
 addCommandAlias("ctc", "clean; tc")
 addCommandAlias("rctc", "reload; ctc")
 // Start, stop, restart the application
-// Use `~rst` to restart the application automatically on file changes
 addCommandAlias("start", "~reStart")
 addCommandAlias("stop", "reStop")
 addCommandAlias("restart", "reStart")
