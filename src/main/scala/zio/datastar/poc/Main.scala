@@ -2,7 +2,7 @@ package zio.datastar.poc
 
 import zio.*
 import zio.ZIOAspect.annotated
-import zio.datastar.poc.Api.datastarRoutes
+import zio.datastar.poc.api.Apis.datastarRoutes
 import zio.http.*
 import zio.http.Middleware.*
 import zio.http.netty.NettyConfig
