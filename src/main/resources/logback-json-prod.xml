@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <appender name="ASYNC_JSON_STDOUT" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- See https://logback.qos.ch/manual/appenders.html -->
+        <queueSize>2048</queueSize> <!-- 256 by default - current value is 1024*10 -->
+        <discardingThreshold>0</discardingThreshold> <!-- 20% by default -->
+        <appender-ref ref="JSON" />
+    </appender>
+
+    <logger name="io.netty" level="INFO"/>
+
+    <root level="${LOGGING_LEVEL:-INFO}">
+        <appender-ref ref="ASYNC_JSON_STDOUT"/>
+    </root>
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+    <shutdownHook class="ch.qos.logback.core.hook.DefaultShutdownHook"/>
+</configuration>
