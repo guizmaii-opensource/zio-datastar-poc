@@ -8,17 +8,11 @@ import zio.stream.ZStream
 
 object Api {
 
-  private val contentTypeHtml: Headers = Headers(Header.ContentType(MediaType.text.html).untyped)
-
   val datastarRoutes: Routes[Any, Throwable] =
     Routes(
       // Serve HTML page
       Method.GET / Root -> handler(
-        Response(
-          Status.Ok,
-          contentTypeHtml,
-          Body.fromString(html),
-        )
+        Response.html(html)
       ),
 
       // Increment endpoint
