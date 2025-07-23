@@ -1,5 +1,8 @@
 package zio.datastar.poc
 
+import zio.datastar.poc.api.Endpoints
+import zio.datastar.poc.extensions.{datastarAction, datastarState}
+import zio.datastar.poc.macros.datastarFieldName
 import zio.http.*
 import zio.http.template.Dom
 import zio.json.*
@@ -10,9 +13,13 @@ object Datastar {
   final case class CounterState(count: Int) derives Schema, JsonCodec
   object CounterState {
     val initial: CounterState = CounterState(count = 0)
+
+    // Field name extraction using macro
+    val countField: String = datastarFieldName[CounterState](_.count)
   }
+
   // Datastar SSE helper
-  object Events       {
+  object Events {
     def patchSignals(json: String): ServerSentEvent[String] =
       ServerSentEvent(
         data = s"signals $json",
@@ -21,7 +28,7 @@ object Datastar {
   }
 
   // HTML page with Datastar
-  val html: Dom =
+  def html: Dom =
     Dom.raw(
       s"""
          |<html>
@@ -30,10 +37,10 @@ object Datastar {
          |   <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@main/bundles/datastar.js"></script>
          |</head>
          |<body>
-         |   <div data-signals='${CounterState.initial.toJson}'>
-         |       <h1>Counter: <span data-text="$$count"></span></h1>
-         |       <button data-on-click="@post('/increment')">+</button>
-         |       <button data-on-click="@post('/decrement')">-</button>
+         |   <div data-signals='${CounterState.initial.datastarState}'>
+         |       <h1>Counter: <span data-text="${CounterState.countField}"></span></h1>
+         |       <button data-on-click="${Endpoints.`POST /increment`.datastarAction}">+</button>
+         |       <button data-on-click="${Endpoints.`POST /decrement`.datastarAction}">-</button>
          |   </div>
          |</body>
          |</html>""".stripMargin.trim

@@ -1,11 +1,41 @@
 package zio.datastar.poc
 
+import zio.http.Method
+import zio.http.endpoint.Endpoint
 import zio.json.{JsonCodec, JsonDecoder, JsonEncoder}
 import zio.prelude.{NewtypeCustom, Subtype}
 import zio.schema.Schema
 
-object extensions {
+private trait DataStars {
+  extension (endpoint: Endpoint[?, ?, ?, ?, ?]) {
+    def datastarAction: String = {
+      val method =
+        endpoint.route.method match {
+          case Method.OPTIONS      => "options"
+          case Method.GET          => "get"
+          case Method.HEAD         => "head"
+          case Method.POST         => "post"
+          case Method.PUT          => "put"
+          case Method.PATCH        => "patch"
+          case Method.DELETE       => "delete"
+          case Method.TRACE        => "trace"
+          case Method.CONNECT      => "connect"
+          case Method.ANY          => "get"
+          case Method.CUSTOM(name) => name
+        }
 
+      val path = endpoint.route.pathCodec.render
+
+      s"""@$method('$path')"""
+    }
+  }
+
+  extension [A](a: A) {
+    def datastarState(using JsonEncoder[A]) = JsonEncoder[A].encodeJson(a, indent = None)
+  }
+}
+
+private trait Newtypes {
   trait Unsafe[A] {
     self: NewtypeCustom[A] =>
     final def unsafe(a: A): Type                 = wrap(a)
@@ -27,5 +57,6 @@ object extensions {
     def unsafe[A](a: A)(using ev: T <:< Subtype[A]): t.Type                 = a.asInstanceOf[t.Type]
     def unsafeAll[A, F[_]](fa: F[A])(using ev: T <:< Subtype[A]): F[t.Type] = fa.asInstanceOf[F[t.Type]]
   }
-
 }
+
+object extensions extends Newtypes with DataStars
