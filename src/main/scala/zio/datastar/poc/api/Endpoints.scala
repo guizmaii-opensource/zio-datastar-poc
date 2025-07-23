@@ -5,6 +5,7 @@ import zio.datastar.poc.Datastar.CounterState
 import zio.http.*
 import zio.http.endpoint.*
 import zio.http.template.Dom
+import zio.stream.{UStream, ZStream}
 
 object Endpoints {
 
@@ -12,14 +13,14 @@ object Endpoints {
     Endpoint(Method.GET / Root)
       .out[Dom]
 
-  val `POST /increment`: Endpoint[Unit, CounterState, ZNothing, ServerSentEvent[String], AuthType.None] =
+  val `POST /increment`: Endpoint[Unit, CounterState, ZNothing, UStream[ServerSentEvent[String]], AuthType.None] =
     Endpoint(Method.POST / "increment")
       .in[CounterState]
-      .out[ServerSentEvent[String]]
+      .outStream[ServerSentEvent[String]]
 
-  val `POST /decrement`: Endpoint[Unit, CounterState, ZNothing, ServerSentEvent[String], AuthType.None] =
+  val `POST /decrement`: Endpoint[Unit, CounterState, ZNothing, UStream[ServerSentEvent[String]], AuthType.None] =
     Endpoint(Method.POST / "decrement")
       .in[CounterState]
-      .out[ServerSentEvent[String]]
+      .outStream[ServerSentEvent[String]]
 
 }
