@@ -11,9 +11,7 @@ object Api {
   val datastarRoutes: Routes[Any, Throwable] =
     Routes(
       // Serve HTML page
-      Method.GET / Root -> handler(
-        Response.html(html)
-      ),
+      Method.GET / Root -> handler(Response.html(html)),
 
       // Increment endpoint
       Method.POST / "increment" -> handler { (req: Request) =>
