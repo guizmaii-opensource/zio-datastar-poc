@@ -5,6 +5,7 @@ import zio.datastar.poc.Datastar.html
 import zio.datastar.poc.api.Endpoints.*
 import zio.http.Routes
 import zio.json.*
+import zio.stream.ZStream
 
 object Apis {
 
@@ -16,13 +17,13 @@ object Apis {
   private val increment =
     `POST /increment`.implementPurely { currentState =>
       val newState = currentState.copy(count = currentState.count + 1)
-      Datastar.Events.patchSignals(newState.toJson)
+      ZStream.succeed(Datastar.Events.patchSignals(newState.toJson))
     }
 
   private val decrement =
     `POST /decrement`.implementPurely { currentState =>
       val newState = currentState.copy(count = currentState.count - 1)
-      Datastar.Events.patchSignals(newState.toJson)
+      ZStream.succeed(Datastar.Events.patchSignals(newState.toJson))
     }
 
 }
