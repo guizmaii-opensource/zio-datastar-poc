@@ -1,12 +1,12 @@
 package zio.datastar.poc.datastar
 
-import zio.datastar.poc.extensions.Extended
 import zio.http.ServerSentEvent
 import zio.json.{EncoderOps, JsonEncoder}
 import zio.prelude.Subtype
+import zio.schema.Schema
 
 type PatchSignal[State] = PatchSignal.Type
-object PatchSignal extends Subtype[ServerSentEvent[String]] with Extended[ServerSentEvent[String]] {
+object PatchSignal extends Subtype[ServerSentEvent[String]] {
   def apply[State: JsonEncoder](data: State): PatchSignal[State] =
     wrap(
       ServerSentEvent(
@@ -14,4 +14,6 @@ object PatchSignal extends Subtype[ServerSentEvent[String]] with Extended[Server
         eventType = Some("datastar-patch-signals")
       )
     )
+
+  given [State]: Schema[PatchSignal[State]] = wrapAll(ServerSentEvent.schema[String])
 }
