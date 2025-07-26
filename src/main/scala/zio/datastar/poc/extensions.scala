@@ -31,7 +31,7 @@ private trait DataStars {
   }
 
   extension [A](a: A) {
-    def datastarState(using JsonEncoder[A]) = JsonEncoder[A].encodeJson(a, indent = None)
+    def datastarState(using JsonEncoder[A]): CharSequence = JsonEncoder[A].encodeJson(a, indent = None)
   }
 }
 

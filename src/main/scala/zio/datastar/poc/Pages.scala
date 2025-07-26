@@ -2,33 +2,12 @@ package zio.datastar.poc
 
 import zio.datastar.poc.api.Endpoints
 import zio.datastar.poc.extensions.{datastarAction, datastarState}
-import zio.datastar.poc.macros.datastarFieldName
-import zio.http.*
+import zio.datastar.poc.states.CounterState
 import zio.http.template.Dom
-import zio.json.*
-import zio.schema.{Schema, derived}
 
-object Datastar {
+object Pages {
 
-  final case class CounterState(count: Int) derives Schema, JsonCodec
-  object CounterState {
-    val initial: CounterState = CounterState(count = 0)
-
-    // Field name extraction using macro
-    val countField: String = datastarFieldName[CounterState](_.count)
-  }
-
-  // Datastar SSE helper
-  object Events {
-    def patchSignals(json: String): ServerSentEvent[String] =
-      ServerSentEvent(
-        data = s"signals $json",
-        eventType = Some("datastar-patch-signals")
-      )
-  }
-
-  // HTML page with Datastar
-  def html: Dom =
+  def home: Dom =
     Dom.raw(
       s"""
          |<html>
