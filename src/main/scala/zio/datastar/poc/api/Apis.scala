@@ -15,13 +15,13 @@ object Apis {
 
   private val increment =
     `POST /increment`.implementPurely { currentState =>
-      val newState = currentState.copy(count = currentState.count + 1)
+      val newState = currentState.increment
       ZStream.succeed(PatchSignal(newState))
     }
 
   private val decrement =
     `POST /decrement`.implementPurely { currentState =>
-      val newState = currentState.copy(count = currentState.count - 1)
+      val newState = currentState.decrement
       ZStream.succeed(PatchSignal(newState))
     }
 
