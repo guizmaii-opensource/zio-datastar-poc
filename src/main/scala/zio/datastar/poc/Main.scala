@@ -3,6 +3,7 @@ package zio.datastar.poc
 import zio.*
 import zio.ZIOAspect.annotated
 import zio.datastar.poc.api.Apis.datastarRoutes
+import zio.datastar.poc.datastar.DataStore
 import zio.http.*
 import zio.http.Middleware.*
 import zio.http.netty.NettyConfig
@@ -99,5 +100,6 @@ object Main extends ZIOAppDefault {
     ).provideSomeAuto(
       server,
       ZLayer.succeed(Port(8080)),
+      DataStore.live,
     )
 }
