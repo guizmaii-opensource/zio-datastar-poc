@@ -1,7 +1,7 @@
 package zio.datastar.poc.api
 
 import zio.*
-import zio.datastar.poc.datastar.PatchSignal
+import zio.datastar.poc.datastar.*
 import zio.datastar.poc.states.CounterState
 import zio.http.*
 import zio.http.endpoint.*
@@ -23,5 +23,23 @@ object Endpoints {
     Endpoint(Method.POST / "decrement")
       .in[CounterState]
       .outStream[PatchSignal[CounterState]]
+
+  val `POST /update-content`: Endpoint[Unit, Unit, ZNothing, UStream[PatchElements], AuthType.None] =
+    Endpoint(Method.POST / "update-content")
+      .outStream[PatchElements]
+
+  val `POST /append-item`: Endpoint[Unit, String, ZNothing, UStream[PatchElements], AuthType.None] =
+    Endpoint(Method.POST / "append-item")
+      .in[String]
+      .outStream[PatchElements]
+
+  val `POST /execute-alert`: Endpoint[Unit, String, ZNothing, UStream[ExecuteScript], AuthType.None] =
+    Endpoint(Method.POST / "execute-alert")
+      .in[String]
+      .outStream[ExecuteScript]
+
+  val `POST /update-user-data`: Endpoint[Unit, Unit, ZNothing, UStream[PatchSignal[Map[String, String]]], AuthType.None] =
+    Endpoint(Method.POST / "update-user-data")
+      .outStream[PatchSignal[Map[String, String]]]
 
 }

@@ -9,11 +9,16 @@ opaque type PatchSignal[State] = ServerSentEvent[String]
 object PatchSignal {
   private val eventType: Option[String] = Some("datastar-patch-signals")
 
-  def apply[State: JsonEncoder](data: State): PatchSignal[State] =
+  def apply[State: JsonEncoder](data: State, onlyIfMissing: Option[Boolean] = None): PatchSignal[State] = {
+    val dataLines = onlyIfMissing match {
+      case Some(value) => Seq(s"onlyIfMissing $value", s"signals ${data.toJson}")
+      case None        => Seq(s"signals ${data.toJson}")
+    }
     ServerSentEvent(
-      data = s"signals ${data.toJson}",
+      data = dataLines.mkString("\n"),
       eventType = eventType
     )
+  }
 
   /**
    * Needed otherwise the zio-http `Endpoint::outStream` method doesn't pick the correct `HttpContentCodec` implicit
